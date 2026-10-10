@@ -1,3 +1,5 @@
+using EmploymentManagement.BLL;
+using EmploymentManagement.BLL.Services;
 using EmploymentManagement.Data;
 using EmploymentManagement.Data.Entities;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +13,10 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
+// AddScoped veut dire qu'une nouvelle instance du service est créée pour chaque requête HTTP, et partagée pendant cette requête.
+// C'est la durée de vie qui convient aux services qui utilisent un DbContext
+builder.Services.AddScoped<EmployeService>();
+builder.Services.AddScoped<DepartementService>();
 
 var app = builder.Build();
 

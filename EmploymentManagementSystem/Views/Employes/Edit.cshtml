@@ -1,0 +1,50 @@
+﻿@model EmploymentManagementSystem.Models.EmployeViewModel
+
+<h2>Modifier l'employé</h2>
+
+<form asp-action="Edit" asp-route-id="@Model.Id" method="post">
+    <div asp-validation-summary="All" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="NomEmployes" class="form-label"></label>
+        <input asp-for="NomEmployes" class="form-control" />
+        <span asp-validation-for="NomEmployes" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="EmailEmployes" class="form-label"></label>
+        <input asp-for="EmailEmployes" class="form-control" />
+        <span asp-validation-for="EmailEmployes" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Poste" class="form-label"></label>
+        <input asp-for="Poste" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StatutEmployes" class="form-label"></label>
+        <input asp-for="StatutEmployes" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateEmbauche" class="form-label"></label>
+        <p class="form-control-plaintext">@Model.DateEmbauche.ToString("d")</p>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Salaire" class="form-label"></label>
+        <input asp-for="Salaire" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DepartementId" class="form-label">Département</label>
+        <select asp-for="DepartementId" class="form-control"
+                asp-items="@(new SelectList(Model.DepartementsDisponibles, "Id", "NomDepartement"))">
+            <option value="">-- Choisir --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Enregistrer</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>

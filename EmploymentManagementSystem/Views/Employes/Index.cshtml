@@ -1,0 +1,40 @@
+﻿@model IEnumerable<EmploymentManagement.Data.Entities.Employe>
+
+<h2>Liste des employés</h2>
+
+<a asp-action="Create" class="btn btn-primary mb-3">Nouvel employé</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Poste</th>
+            <th>Département</th>
+            <th>Salaire</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var employe in Model)
+        {
+            <tr>
+                <td>@employe.NomEmployes</td>
+                <td>@employe.Poste</td>
+                <td>@employe.Departement?.NomDepartement</td>
+                <td>@employe.Salaire.ToString("C")</td>
+                <td>@employe.StatutEmployes</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@employe.Id" class="btn btn-sm btn-secondary">Détails</a>
+                    <a asp-action="Edit" asp-route-id="@employe.Id" class="btn btn-sm btn-warning">Modifier</a>
+                    <form asp-action="Archive" asp-route-id="@employe.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Archiver cet employé ?');">
+                            Archiver
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

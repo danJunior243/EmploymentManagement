@@ -1,0 +1,29 @@
+﻿@model EmploymentManagement.Data.Entities.Employe
+
+<h2>Fiche employé</h2>
+
+<dl class="row">
+    <dt class="col-sm-3">Nom</dt>
+    <dd class="col-sm-9">@Model.NomEmployes</dd>
+
+    <dt class="col-sm-3">Courriel</dt>
+    <dd class="col-sm-9">@Model.EmailEmployes</dd>
+
+    <dt class="col-sm-3">Poste</dt>
+    <dd class="col-sm-9">@Model.Poste</dd>
+
+    <dt class="col-sm-3">Département</dt>
+    <dd class="col-sm-9">@Model.Departement?.NomDepartement</dd>
+
+    <dt class="col-sm-3">Date d'embauche</dt>
+    <dd class="col-sm-9">@Model.DateEmbauche.ToString("d")</dd>
+
+    <dt class="col-sm-3">Salaire</dt>
+    <dd class="col-sm-9">@Model.Salaire.ToString("C")</dd>
+
+    <dt class="col-sm-3">Statut</dt>
+    <dd class="col-sm-9">@Model.StatutEmployes</dd>
+</dl>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Modifier</a>
+<a asp-action="Index" class="btn btn-secondary">Retour à la liste</a>
