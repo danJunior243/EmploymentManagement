@@ -38,12 +38,12 @@ namespace EmploymentManagement.Data
             modelBuilder.Entity<Paie>().Property(p => p.Deductions).HasPrecision(10, 2);
             modelBuilder.Entity<Paie>().Property(p => p.NetAPayer).HasPrecision(10, 2);
             modelBuilder.Entity<Absences>().Property(a => a.Duree).HasPrecision(10, 2);
-
-
-
-
-
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Employe>()
+            .HasOne(e => e.Departement)
+            .WithMany(d => d.ListeEmployes)
+            .HasForeignKey(e => e.DepartementId)
+            .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

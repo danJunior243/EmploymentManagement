@@ -420,7 +420,7 @@ namespace EmploymentManagement.Data.Migrations
                     b.HasOne("EmploymentManagement.Data.Entities.Departement", "Departement")
                         .WithMany("ListeEmployes")
                         .HasForeignKey("DepartementId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Departement");

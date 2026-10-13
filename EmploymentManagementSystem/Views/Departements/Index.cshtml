@@ -1,0 +1,39 @@
+﻿@model IEnumerable<EmploymentManagement.Data.Entities.Departement>
+
+<h2>Départements</h2>
+
+@* Message d'erreur envoyé par le contrôleur (Delete refusé) *@
+@if (TempData["Erreur"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erreur"]</div>
+}
+
+<a asp-action="Create" class="btn btn-primary mb-3">Nouveau département</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Nombre d'employés</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var dep in Model)
+        {
+            <tr>
+                <td>@dep.NomDepartement</td>
+                <td>@(dep.ListeEmployes?.Count ?? 0)</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@dep.Id" class="btn btn-sm btn-warning">Modifier</a>
+                    <form asp-action="Delete" asp-route-id="@dep.Id" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-danger"
+                                onclick="return confirm('Supprimer ce département ?');">
+                            Supprimer
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
