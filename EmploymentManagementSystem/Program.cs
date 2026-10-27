@@ -17,6 +17,8 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
 // C'est la durée de vie qui convient aux services qui utilisent un DbContext
 builder.Services.AddScoped<EmployeService>();
 builder.Services.AddScoped<DepartementService>();
+builder.Services.AddScoped<CongeService>();
+builder.Services.AddScoped<PaieService>();
 
 var app = builder.Build();
 

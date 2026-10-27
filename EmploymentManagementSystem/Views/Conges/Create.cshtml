@@ -1,0 +1,47 @@
+﻿@model EmploymentManagementSystem.Models.CongeViewModel
+
+<h2>Nouvelle demande de congé</h2>
+
+<form asp-action="Create" method="post">
+    @* ModelOnly : affiche les erreurs du service (chevauchement, dates) qui n'ont pas de champ précis *@
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeId" class="form-label">Employé</label>
+        <select asp-for="EmployeId" class="form-control"
+                asp-items="@(new SelectList(Model.EmployesDisponibles, "Id", "NomEmployes"))">
+            <option value="0">-- Choisir un employé --</option>
+        </select>
+        <span asp-validation-for="EmployeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Type de congé</label>
+        <select asp-for="Type" class="form-control"
+                asp-items="@(new SelectList(Model.TypesDisponibles))">
+            <option value="">-- Choisir un type --</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateDebut" class="form-label">Date de début</label>
+        <input asp-for="DateDebut" class="form-control" type="date" />
+        <span asp-validation-for="DateDebut" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateFin" class="form-label">Date de fin</label>
+        <input asp-for="DateFin" class="form-control" type="date" />
+        <span asp-validation-for="DateFin" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Envoyer la demande</button>
+    <a asp-action="Index" class="btn btn-secondary">Annuler</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

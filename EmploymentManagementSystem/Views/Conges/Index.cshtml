@@ -1,0 +1,63 @@
+﻿@using EmploymentManagement.Data.Entities
+@model IEnumerable<Conges>
+
+<h2>Demandes de congé</h2>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success">@TempData["Succes"]</div>
+}
+@if (TempData["Erreur"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erreur"]</div>
+}
+
+<a asp-action="Create" class="btn btn-primary mb-3">Nouvelle demande</a>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Employé</th>
+            <th>Type</th>
+            <th>Début</th>
+            <th>Fin</th>
+            <th>Durée</th>
+            <th>Statut</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var conge in Model)
+        {
+            @* Couleur du badge selon le statut *@
+            var badge = conge.Statut switch
+            {
+                StatutConge.EnAttente => "bg-warning text-dark",
+                StatutConge.Approuve => "bg-success",
+                StatutConge.Refuse => "bg-danger",
+                _ => "bg-secondary"
+            };
+
+            <tr>
+                <td>@conge.Employe?.NomEmployes</td>
+                <td>@conge.Type</td>
+                <td>@conge.DateDebut.ToString("d")</td>
+                <td>@conge.DateFin.ToString("d")</td>
+                <td>@((conge.DateFin - conge.DateDebut).Days + 1) j</td>
+                <td><span class="badge @badge">@conge.Statut</span></td>
+                <td>
+                    @* Les boutons n'apparaissent que pour les demandes en attente *@
+                    @if (conge.Statut == StatutConge.EnAttente)
+                    {
+                        <form asp-action="Approuver" asp-route-id="@conge.Id" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-sm btn-success">Approuver</button>
+                        </form>
+                        <form asp-action="Refuser" asp-route-id="@conge.Id" method="post" style="display:inline">
+                            <button type="submit" class="btn btn-sm btn-danger">Refuser</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

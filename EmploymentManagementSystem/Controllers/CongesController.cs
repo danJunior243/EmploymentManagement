@@ -3,6 +3,7 @@ using EmploymentManagement.BLL.Services;
 using EmploymentManagement.Data.Entities;
 using EmploymentManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace EmploymentManagementSystem.Controllers
@@ -37,7 +38,7 @@ namespace EmploymentManagementSystem.Controllers
         }
 
         [HttpPost]
-       /* public async Task<IActionResult>Create(CongeViewModel congeViewModel)
+        public async Task<IActionResult>Create(CongeViewModel congeViewModel)
         {
             if (!ModelState.IsValid)
             {
@@ -45,17 +46,63 @@ namespace EmploymentManagementSystem.Controllers
                await ChargerListesAsync(congeViewModel);
                 return View(congeViewModel);
 
-            }   
-            var conge=new Conges
+            }
+            var conge = new Conges
             {
 
+                EmployeId = congeViewModel.EmployeId,
+                DateDebut = DateTime.SpecifyKind(congeViewModel.DateDebut, DateTimeKind.Utc),
+                DateFin =  DateTime.SpecifyKind(congeViewModel.DateFin, DateTimeKind.Utc),
+                Type = congeViewModel.Type,
 
 
+            };
+
+            var (succes, erreur) = await _congeService.CreateCongeAsync(conge);
+
+            if (!succes)
+            {
+                // Le service a refusé : on affiche son message en haut du formulaire.
+                // La clé vide signifie "erreur du modèle entier", pas d'un champ précis.
+                ModelState.AddModelError(string.Empty, erreur!);
+                await ChargerListesAsync(congeViewModel);
+                return View(congeViewModel);
             }
 
+            TempData["Succes"] = "La demande de congé a été enregistrée.";
+            return RedirectToAction(nameof(Index));
+
+
+            
                
 
-        }*/
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Approuver(int id)
+        {
+            bool result= await _congeService.ApprouverCongeAsync(id);
+            if(!result)
+            {
+                TempData["Erreur"] = "Impossible d'approuver : cette demande est introuvable ou a déjà été traitée.";
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Refuser(int id)
+        {
+            bool result = await _congeService.RefuserCongeAsync(id);
+            if (!result)
+            {
+                TempData["Erreur"] = "Impossible de refuser : cette demande est introuvable ou a déjà été traitée.";
+            }
+            return RedirectToAction(nameof(Index));
+
+        }
+
+
 
 
         private async Task ChargerListesAsync(CongeViewModel viewModel)
@@ -67,10 +114,7 @@ namespace EmploymentManagementSystem.Controllers
                 .Where(e => e.StatutEmployes == "Actif")
                 .ToList();
 
-            viewModel.TypesDisponibles = new List<string>
-            {
-                "Congé payé", "Maladie", "Sans solde", "Événement familial"
-            };
+            viewModel.TypesDisponibles = TypeConges.Tous.ToList();
         }
 
 

@@ -247,7 +247,8 @@ namespace EmploymentManagement.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeId");
+                    b.HasIndex("EmployeId", "Mois")
+                        .IsUnique();
 
                     b.ToTable("Paies");
                 });

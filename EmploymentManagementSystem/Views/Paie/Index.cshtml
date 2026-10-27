@@ -1,0 +1,71 @@
+﻿@using System.Globalization
+@model EmploymentManagementSystem.Models.PaieIndexViewModel
+
+@{
+    var culture = new CultureInfo("fr-CA");
+    var date = new DateTime(Model.Annee, Model.Mois, 1);
+    var moisPrecedent = date.AddMonths(-1);
+    var moisSuivant = date.AddMonths(1);
+}
+
+<h2>Paie</h2>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success">@TempData["Succes"]</div>
+}
+@if (TempData["Erreur"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erreur"]</div>
+}
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <a asp-action="Index" asp-route-annee="@moisPrecedent.Year" asp-route-mois="@moisPrecedent.Month"
+       class="btn btn-outline-secondary btn-sm">&laquo;</a>
+    <strong>@date.ToString("MMMM yyyy", culture)</strong>
+    <a asp-action="Index" asp-route-annee="@moisSuivant.Year" asp-route-mois="@moisSuivant.Month"
+       class="btn btn-outline-secondary btn-sm">&raquo;</a>
+
+    <form asp-action="Generer" method="post" class="ms-auto">
+        <input type="hidden" name="annee" value="@Model.Annee" />
+        <input type="hidden" name="mois" value="@Model.Mois" />
+        <button type="submit" class="btn btn-primary btn-sm">Générer la paie du mois</button>
+    </form>
+</div>
+
+@if (!Model.Paies.Any())
+{
+    <p class="text-muted">Aucune paie générée pour ce mois.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employé</th>
+                <th class="text-end">Brut</th>
+                <th class="text-end">Déductions</th>
+                <th class="text-end">Net à verser</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var p in Model.Paies)
+            {
+                <tr>
+                    <td>@p.Employe?.NomEmployes</td>
+                    <td class="text-end">@p.SalaireBrut.ToString("C", culture)</td>
+                    <td class="text-end">@(p.Deductions > 0 ? "-" + p.Deductions.ToString("C", culture) : "—")</td>
+                    <td class="text-end fw-bold">@p.NetAPayer.ToString("C", culture)</td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr class="table-light fw-bold">
+                <td>Total (@Model.Paies.Count employé(s))</td>
+                <td class="text-end">@Model.TotalBrut.ToString("C", culture)</td>
+                <td class="text-end">@Model.TotalDeductions.ToString("C", culture)</td>
+                <td class="text-end">@Model.TotalNet.ToString("C", culture)</td>
+            </tr>
+        </tfoot>
+    </table>
+}

@@ -38,6 +38,13 @@ namespace EmploymentManagement.Data
             modelBuilder.Entity<Paie>().Property(p => p.Deductions).HasPrecision(10, 2);
             modelBuilder.Entity<Paie>().Property(p => p.NetAPayer).HasPrecision(10, 2);
             modelBuilder.Entity<Absences>().Property(a => a.Duree).HasPrecision(10, 2);
+
+            // Un employé ne peut avoir qu'une seule paie par mois
+            modelBuilder.Entity<Paie>()
+            .HasIndex(p => new { p.EmployeId, p.Mois })
+            .IsUnique();
+
+            // Interdit de supprimer un département qui contient encore des employés
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Employe>()
             .HasOne(e => e.Departement)
