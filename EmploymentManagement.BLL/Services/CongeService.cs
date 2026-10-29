@@ -19,13 +19,19 @@ namespace EmploymentManagement.BLL.Services
             _context = context;
         }
 
+        /// <summary>
+        /// Retourne les congés, du plus récent au plus ancien.
+        /// Si employeId est fourni, ne retourne que les congés de cet employé.
+        /// </summary>
 
-        public async Task<List<Conges>> GetAllCongesAsync()
+        public async Task<List<Conges>> GetAllCongesAsync(int? employeId = null)
         {
-            return await _context.Conges
-                           .Include(c => c.Employe)
-                           .OrderByDescending(c => c.DateDemande)
-                          .ToListAsync();
+            var query = _context.Conges.Include(c => c.Employe).AsQueryable();
+
+            if (employeId != null)
+                query = query.Where(c => c.EmployeId == employeId);
+
+            return await query.OrderByDescending(c => c.DateDemande).ToListAsync();
         }
 
         /// <summary>

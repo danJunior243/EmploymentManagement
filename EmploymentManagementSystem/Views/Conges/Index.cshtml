@@ -47,7 +47,7 @@
                 <td><span class="badge @badge">@conge.Statut</span></td>
                 <td>
                     @* Les boutons n'apparaissent que pour les demandes en attente *@
-                    @if (conge.Statut == StatutConge.EnAttente)
+                    @if (User.IsInRole("Admin") && conge.Statut == StatutConge.EnAttente)
                     {
                         <form asp-action="Approuver" asp-route-id="@conge.Id" method="post" style="display:inline">
                             <button type="submit" class="btn btn-sm btn-success">Approuver</button>

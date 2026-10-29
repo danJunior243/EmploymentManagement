@@ -10,7 +10,7 @@ namespace EmploymentManagement.Data.Entities
     public class ApplicationUser:IdentityUser
     {
         public int? EmployeId { get; set; }
-        public Employe Employe { get; set; }
+        public Employe? Employe { get; set; }
 
 
     }

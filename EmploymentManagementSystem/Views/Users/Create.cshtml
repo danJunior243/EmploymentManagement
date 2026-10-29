@@ -1,0 +1,50 @@
+﻿@model EmploymentManagementSystem.Models.CreateUserViewModel
+
+@{
+    ViewData["Title"] = "New account";
+}
+
+<h2>New account</h2>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeId" class="form-label">Employee</label>
+        <select asp-for="EmployeId" class="form-control"
+                asp-items="@(new SelectList(Model.EmployesDisponibles, "Id", "NomEmployes"))">
+            <option value="0">-- Choose an employee --</option>
+        </select>
+        <span asp-validation-for="EmployeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" autocomplete="off" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Password" class="form-label">Temporary password</label>
+        <input asp-for="Password" class="form-control" autocomplete="new-password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Role" class="form-label">Role</label>
+        <select asp-for="Role" class="form-control"
+                asp-items="@(new SelectList(Model.RolesDisponibles))">
+            <option value="">-- Choose a role --</option>
+        </select>
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create account</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

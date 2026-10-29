@@ -1,9 +1,11 @@
 ﻿using EmploymentManagement.BLL.Services;
 using EmploymentManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmploymentManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class PaieController : Controller
     {
         private readonly PaieService _paieService;

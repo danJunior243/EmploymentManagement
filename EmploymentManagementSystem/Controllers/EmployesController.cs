@@ -3,9 +3,10 @@ using EmploymentManagement.BLL.Services;
 using EmploymentManagement.Data.Entities;
 using EmploymentManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.AspNetCore.Authorization;
 namespace EmploymentManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class EmployesController : Controller
     {
         

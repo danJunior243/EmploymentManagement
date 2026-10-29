@@ -1,10 +1,12 @@
 ﻿using EmploymentManagement.BLL.Services;
 using EmploymentManagement.Data.Entities;
 using EmploymentManagementSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EmploymentManagementSystem.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class DepartementsController : Controller
     {
 
