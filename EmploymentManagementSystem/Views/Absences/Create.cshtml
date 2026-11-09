@@ -1,0 +1,57 @@
+﻿@model EmploymentManagementSystem.Models.AbsenceViewModel
+
+@{
+    ViewData["Title"] = "New absence";
+}
+
+<h2>New absence</h2>
+
+<form asp-action="Create" method="post">
+    @* ModelOnly: shows the service's refusals (duplicate, future date...) that have no specific field *@
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="EmployeId" class="form-label">Employee</label>
+        <select asp-for="EmployeId" class="form-control"
+                asp-items="@(new SelectList(Model.EmployesDisponibles, "Id", "NomEmployes"))">
+            <option value="0">-- Choose an employee --</option>
+        </select>
+        <span asp-validation-for="EmployeId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Type" class="form-label">Type of absence</label>
+        <select asp-for="Type" class="form-control"
+                asp-items="@(new SelectList(Model.TypesDisponibles))">
+            <option value="">-- Choose a type --</option>
+        </select>
+        <span asp-validation-for="Type" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="DateAbsence" class="form-label">Date</label>
+        <input asp-for="DateAbsence" class="form-control" type="date" />
+        <span asp-validation-for="DateAbsence" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Duree" class="form-label">Duration (hours, 0.25 to 24)</label>
+        <input asp-for="Duree" class="form-control" />
+        <span asp-validation-for="Duree" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Commentaire" class="form-label">Comment (optional)</label>
+        <textarea asp-for="Commentaire" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Commentaire" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save absence</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

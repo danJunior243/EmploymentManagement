@@ -1,0 +1,83 @@
+﻿@using EmploymentManagement.Data.Entities
+@model IEnumerable<Absences>
+
+@{
+    ViewData["Title"] = "Absences";
+    var isAdmin = User.IsInRole("Admin");
+}
+
+<h2>Absences</h2>
+
+@if (TempData["Succes"] != null)
+{
+    <div class="alert alert-success">@TempData["Succes"]</div>
+}
+@if (TempData["Erreur"] != null)
+{
+    <div class="alert alert-danger">@TempData["Erreur"]</div>
+}
+
+@* Only the admin records absences *@
+@if (isAdmin)
+{
+    <a asp-action="Create" class="btn btn-primary mb-3">New absence</a>
+}
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No absences recorded.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Duration (hours)</th>
+                <th>Status</th>
+                <th>Comment</th>
+                @if (isAdmin)
+                {
+                    <th>Actions</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var absence in Model)
+            {
+                <tr>
+                    <td>@absence.Employe?.NomEmployes</td>
+                    <td>@absence.Type</td>
+                    <td>@absence.DateAbsence.ToString("yyyy-MM-dd")</td>
+                    <td>@absence.Duree</td>
+                    <td>
+                        @* Not justified is a normal state, so a neutral color rather than red *@
+                        @if (absence.Justifiee)
+                        {
+                            <span class="badge bg-success">Justified</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-secondary">Not justified</span>
+                        }
+                    </td>
+                    <td>@absence.Commentaire</td>
+                    @if (isAdmin)
+                    {
+                        <td>
+                            @* The button only appears while the absence is not justified *@
+                            @if (!absence.Justifiee)
+                            {
+                                <form asp-action="MarquerJustifiee" asp-route-id="@absence.Id" method="post" style="display:inline">
+                                    <button type="submit" class="btn btn-sm btn-success">Mark as justified</button>
+                                </form>
+                            }
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}

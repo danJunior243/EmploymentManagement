@@ -32,6 +32,7 @@
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item"><a class="nav-link text-dark" asp-controller="Conges" asp-action="Index">Leave</a></li>
+                            <li class="nav-item"><a class="nav-link text-dark" asp-controller="Absences" asp-action="Index">Absences</a></li>
                         }
 
                         @if (User.IsInRole("Admin"))

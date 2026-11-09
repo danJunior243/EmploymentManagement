@@ -20,7 +20,7 @@ builder.Services.AddScoped<EmployeService>();
 builder.Services.AddScoped<DepartementService>();
 builder.Services.AddScoped<CongeService>();
 builder.Services.AddScoped<PaieService>();
-
+builder.Services.AddScoped<AbsenceService>();
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
