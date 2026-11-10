@@ -5,6 +5,7 @@ using EmploymentManagement.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using EmploymentManagementSystem.Seed;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +22,25 @@ builder.Services.AddScoped<DepartementService>();
 builder.Services.AddScoped<CongeService>();
 builder.Services.AddScoped<PaieService>();
 builder.Services.AddScoped<AbsenceService>();
+
+builder.Services.Configure<ForwardedHeadersOptions>(options =>
+{
+    options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+    options.KnownNetworks.Clear();   // on accepte le proxy de Railway
+    options.KnownProxies.Clear();
+});
 var app = builder.Build();
+
+app.UseForwardedHeaders();
+
+
 
 using (var scope = app.Services.CreateScope())
 {
-    await IdentitySeeder.SeedAsync(scope.ServiceProvider);
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await db.Database.MigrateAsync(); // crée ou met à jour les tables
+
+    await IdentitySeeder.SeedAsync(scope.ServiceProvider); //puis rôles et admin
 }
 
 
