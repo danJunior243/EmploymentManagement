@@ -2,6 +2,7 @@
 using EmploymentManagement.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
+using EmploymentManagement.BLL.Outils;
 
 namespace EmploymentManagement.BLL.Services
 {
@@ -70,7 +71,7 @@ namespace EmploymentManagement.BLL.Services
                          && c.DateFin >= debutMois)
                 .ToListAsync();
 
-            int joursOuvrablesMois = CompterJoursOuvrables(debutMois, finMois);
+            int joursOuvrablesMois = OutilsDates.CompterJoursOuvrables(debutMois, finMois);
             var nouvellesPaies = new List<Paie>();
 
             foreach (var e in employes)
@@ -84,7 +85,7 @@ namespace EmploymentManagement.BLL.Services
                 {
                     var debut = c.DateDebut > debutMois ? c.DateDebut : debutMois;
                     var fin = c.DateFin < finMois ? c.DateFin : finMois;
-                    joursSansSolde += CompterJoursOuvrables(debut, fin);
+                    joursSansSolde += OutilsDates.CompterJoursOuvrables(debut, fin);
                 }
 
                 decimal deductions = Math.Round(tauxJournalier * joursSansSolde, 2);
@@ -113,18 +114,7 @@ namespace EmploymentManagement.BLL.Services
             return (nouvellesPaies.Count, null);
         }
 
-        // Compte les jours du lundi au vendredi entre deux dates incluses (jours fériés ignorés)
-        private static int CompterJoursOuvrables(DateTime debut, DateTime fin)
-        {
-            int total = 0;
-            for (var jour = debut.Date; jour <= fin.Date; jour = jour.AddDays(1))
-            {
-                if (jour.DayOfWeek != DayOfWeek.Saturday && jour.DayOfWeek != DayOfWeek.Sunday)
-                    total++;
-            }
-            return total;
-        }
-
+       
         private static bool MoisValide(int annee, int mois)
             => mois >= 1 && mois <= 12 && annee >= 2000 && annee <= 2100;
     }

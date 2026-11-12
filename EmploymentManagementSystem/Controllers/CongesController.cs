@@ -25,21 +25,23 @@ namespace EmploymentManagementSystem.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<Conges> conges;
+            var viewModel = new CongesIndexViewModel { Annee = DateTime.UtcNow.Year };
 
             if (User.IsInRole("Admin"))
             {
-                conges = await _congeService.GetAllCongesAsync();
+                viewModel.Conges = await _congeService.GetAllCongesAsync();
             }
             else
             {
-                // Un employé ne voit que ses propres congés
+                // Un employé ne voit que ses congés, et son solde
                 var monId = await GetMonEmployeIdAsync();
-                conges = monId == null
-                    ? new List<Conges>()   // compte non relié à une fiche : rien à montrer
-                    : await _congeService.GetAllCongesAsync(monId);
+                if (monId != null)
+                {
+                    viewModel.Conges = await _congeService.GetAllCongesAsync(monId);
+                    viewModel.Solde = await _congeService.GetSoldeCongesAsync(monId.Value, viewModel.Annee);
+                }
             }
-            return View(conges);
+            return View(viewModel);
         }
 
         [HttpGet]

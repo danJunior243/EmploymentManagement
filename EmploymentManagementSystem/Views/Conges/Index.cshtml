@@ -1,5 +1,6 @@
 ﻿@using EmploymentManagement.Data.Entities
-@model IEnumerable<Conges>
+@using EmploymentManagement.BLL.Outils
+@model EmploymentManagementSystem.Models.CongesIndexViewModel
 
 <h2>Demandes de congé</h2>
 
@@ -12,6 +13,21 @@
     <div class="alert alert-danger">@TempData["Erreur"]</div>
 }
 
+@if (Model.Solde != null)
+{
+    <div class="card mb-3">
+        <div class="card-body">
+            <h6 class="card-subtitle mb-3 text-muted">Mon solde de congés payés (@Model.Annee)</h6>
+            <div class="row text-center">
+                <div class="col"><div class="fs-4">@Model.Solde.DroitAnnuel</div><small class="text-muted">Droit annuel</small></div>
+                <div class="col"><div class="fs-4">@Model.Solde.JoursPris</div><small class="text-muted">Pris (approuvés)</small></div>
+                <div class="col"><div class="fs-4">@Model.Solde.JoursEnAttente</div><small class="text-muted">En attente</small></div>
+                <div class="col"><div class="fs-4 fw-bold">@Model.Solde.JoursRestants</div><small class="text-muted">Restants</small></div>
+            </div>
+        </div>
+    </div>
+}
+
 <a asp-action="Create" class="btn btn-primary mb-3">Nouvelle demande</a>
 
 <table class="table">
@@ -21,15 +37,14 @@
             <th>Type</th>
             <th>Début</th>
             <th>Fin</th>
-            <th>Durée</th>
+            <th>Jours ouvrables</th>
             <th>Statut</th>
             <th>Actions</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var conge in Model)
+        @foreach (var conge in Model.Conges)
         {
-            @* Couleur du badge selon le statut *@
             var badge = conge.Statut switch
             {
                 StatutConge.EnAttente => "bg-warning text-dark",
@@ -41,12 +56,11 @@
             <tr>
                 <td>@conge.Employe?.NomEmployes</td>
                 <td>@conge.Type</td>
-                <td>@conge.DateDebut.ToString("d")</td>
-                <td>@conge.DateFin.ToString("d")</td>
-                <td>@((conge.DateFin - conge.DateDebut).Days + 1) j</td>
+                <td>@conge.DateDebut.ToString("yyyy-MM-dd")</td>
+                <td>@conge.DateFin.ToString("yyyy-MM-dd")</td>
+                <td>@OutilsDates.CompterJoursOuvrables(conge.DateDebut, conge.DateFin)</td>
                 <td><span class="badge @badge">@conge.Statut</span></td>
                 <td>
-                    @* Les boutons n'apparaissent que pour les demandes en attente *@
                     @if (User.IsInRole("Admin") && conge.Statut == StatutConge.EnAttente)
                     {
                         <form asp-action="Approuver" asp-route-id="@conge.Id" method="post" style="display:inline">
